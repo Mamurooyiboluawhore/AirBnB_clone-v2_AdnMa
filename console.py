@@ -116,52 +116,35 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        #values = []
-            
+
         if not args:
             print("** class name missing **")
             return
-        values = args.split()
-        print (values)
+        args = args.split()
         
-        if values[0] not in HBNBCommand.classes:
+        if args[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        # create a dictionary with keys and values of parameters
-      #  *length = len(values)
-       # *parameters = []
-        #*params = {}
-       # *for i in range(1, length):
-        #*    parameters.append(values[i])
-        #*for para in parameters:
-         #*   k, v = para.split('=')
-          #*  v = v[1:-1]
-          # % v = v.replace("_", " ")
-           # if type(v) in HBNBCommand.types.values():
-           #     v = HBNBCommand.types[k](v)
-            
-         #   params[k] = v
-        #print (params)
-        values = {}
-        for i in range(1, len(args)):
-            param = args[i].split('=')
+        #create a dictionary with keys and values of parameters
+        length = len(args)
+        param_list = []
+        dict_params = {}
+        for i in range(1, length):
+            param_list.append(args[i])
 
-            try:
-
-                key = param[0]
-                value = param[1].replace('_', ' ').replace('"','\"')
-            
-            
-                values[key] = value
-            except (IndexError, ValueError):
-                pass
-        print (values)
-  
-        
-       # new_instance = HBNBCommand.classes[args]()
-        #storage.save()
-        #print(new_instance.id)
-        #storage.save()
+        for param in param_list:
+            k, v = param.split("=")
+            #print(f'{k} = {v}')
+            if type(eval(v)) is str:
+                v = v.strip('"').replace('_', ' ')
+            else:
+                v = eval(v)
+            dict_params[k] = v
+        #print(dict_params)
+        new_instance = HBNBCommand.classes[args[0]](**dict_params)
+        storage.save()
+        print(new_instance.id)
+        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -245,10 +228,10 @@ class HBNBCommand(cmd.Cmd):
                 return
             for k, v in storage._FileStorage__objects.items():
                 if k.split('.')[0] == args:
-                    print_list.append(str(v))
+                    print_list.append(v)
         else:
             for k, v in storage._FileStorage__objects.items():
-                print_list.append(str(v))
+                print_list.append(v)
 
         print(print_list)
 
